@@ -1,41 +1,43 @@
 // https://github.com/lgxlogic/BoneScript-SocketIO
 
 var b = require('bonescript');
+//var io = require('socket.io');
 
-var pins = {
-    led1: "USR0",
-    led2: "USR1",
-    led3: "USR2",
-    led4: "USR3"
+var leds = {
+    led1: {pin: "USR0", value: 0},
+    led2: {pin: "USR1", value: 0},
+    led3: {pin: "USR2", value: 0},
+    led4: {pin: "USR3", value: 0}
     };
 
 
-for (var pin in pins ){
-    var pinName = pins[pin];
-    console.log("pin = " + pinName);
-    ledSetup(pinName);
-}
-
-function ledSetup(ledName)
-{
-    b.pinMode(ledName, 'out');
-    b.digitalWrite(ledName, 0);
-    return ledName; 
+for (var key in leds ){
+    var led = leds[key];
+    console.log("pin = " + led.pin);
+    b.pinMode(led.pin, 'out');
+    b.digitalWrite(led.pin, led.value);
 }
 
 
 exports.listener = function (socket) {
-  socket.on('ledSwitch', function (data) {
-    //b.analogWrite(led1, 1-(data/100));
-    console.log("ledSwitch: " + JSON.stringify(data));
+    for (var key in leds ){
+        var led = leds[key];
+        var ledValue = led.value == 1 ? "on" : "off";
+        socket.emit('ledSwitch', { name: key, value: ledValue});
+    }    
     
-    var value = data.value == "on" ? 1 : 0;
-                    
-    b.digitalWrite(pins[data.name], value);
+  socket.on('ledSwitch', function (led) {
+    console.log("ledSwitch: " + JSON.stringify(led));
+    
+    var value = led.value == "on" ? 1 : 0;
+    leds[led.name].value = value;
+    b.digitalWrite(leds[led.name].pin, value);
+    
+    socket.broadcast.emit('ledSwitch', led);
   });
-  
-  
 };
+
+
 
 
 
