@@ -7,28 +7,45 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>Botcamp</title>
     <!-- jQuery and jQuery Mobile -->
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
-    
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <!--<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>-->
-    <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <!--<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>-->
+    <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 
-    <!-- Code for socket.io and device orientation handling -->
     <script>
-    var socket = io.connect();
-    // Send data through socket
-    function Demo(value){
-      socket.emit('demo', value);
-    }      
+    var socket = io.connect();      
 
-    function ledSwitch(sel){
-            socket.emit('ledSwitch', {name: sel.id, value:sel.value});
+    // LED SWITCH
+    function ledSwitch(led){
+            socket.emit('ledSwitch', {name: led.id, value: led.value});
     }
     
-    socket.on('ledSwitch', function(data){
-        console.log("Recieving: ledSwitch = " + JSON.stringify(data));
-        $(' #' + data.name).val(data.value).slider('refresh');
+    socket.on('ledSwitch', function(led){
+        //console.log("Recieving: ledSwitch = " + JSON.stringify(led));
+        $('#' + led.name).val(led.value).slider('refresh');
+    });
+
+    // LED RANGE
+    function ledsRange(e){
+        console.log("Sending: ledsRange = " + e.value);
+        if (e.value != sliderValue)
+            socket.emit('ledsRange', e.value);
+    }
+        
+    
+    var sliderValue = -1000; 
+    
+    socket.on('ledsRangeClient', function(value){
+        console.log("Recieving: ledsRange = " + value);
+        
+        if ($('#ledsSlider').val() != value)
+        {
+            sliderValue = value;
+            console.log("a = " + $('#ledsSlider').val() + ", b = " + value);
+            $('#ledsSlider').val(value).slider('refresh');
+            
+        }
     });
     </script>
 </head>
@@ -82,6 +99,13 @@
                 <option value="off">Off</option>
                 <option value="on">On</option>
             </select>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="ledsSlider">
+                LEDS
+            </label>
+            <input id="ledsSlider" type="range" name="slider" value="0" min="0" max="4"
+            data-highlight="false" data-theme="b" onChange="ledsRange(this);">
         </div>
     </div>
 </div>
