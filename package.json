@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "express": "*",
-    "socket.io": "~0.9.16"
+    "socket.io": "~0.9.16",
+    "beagle-servo": "git+ssh://git@github.com:teisnet/beagle-servo.git"
   }
 }

@@ -1,9 +1,10 @@
-var s = require("./servo");
+var s = require("beagle-servo");
 
 var servos = {
     servo1: new s.servo('servo1'),
     servo2: new s.servo('servo2', 'P9_22')
 };
+
 
 exports.listener = function (socket) {
     
