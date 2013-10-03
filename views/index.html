@@ -8,14 +8,19 @@
 
 <body>
 LINDEGAARDEN 24/7
+Her bor lars
 <script>
   var socket = io.connect('http://10.0.0.6:1338');
   socket.on('news', function (data) {
     console.log(data);
+    var textfield=document.getElementById("news");
+    textfield.value = data.message;
     socket.emit('my other event', { my: 'data' });
   });
 </script>
 
+<button onclick="socket.emit('sendlars', { led1: 'on' });" >LED 1</button>
+<textarea id="news"></textarea>
 </body>
 
 </html>
