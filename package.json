@@ -1,0 +1,8 @@
+{
+  "name": "botcamp-test",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "*",
+    "socket.io": "~0.9.16"
+  }
+}

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>LINDEGAARDEN 24/7</title>
+<script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+LINDEGAARDEN 24/7
+<script>
+  var socket = io.connect('http://10.0.0.6:1338');
+  socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('my other event', { my: 'data' });
+  });
+</script>
+
+</body>
+
+</html>
