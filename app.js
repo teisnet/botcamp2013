@@ -1,30 +1,34 @@
-var app = require('express')()
+// MODULES
+var express = require('express')
+  , app = express()
+  , path = require('path')
   , server = require('http').createServer(app)
   , io = require('socket.io').listen(server);
 
+// CUSTOM MODULES
+var routes = require('./routes')
+  , appSocket = require('./routes/appSocket');
 
 
-app.get('/', function(req, res){
-    res.sendfile(__dirname + '/views/index.html');
+// SETUP
+app.set('port', process.env.PORT || 1338);
+app.set('views', __dirname + '/views');
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+// ROUTES
+//app.get('/', routes.index);
+app.get('/teis', routes.teis);
+
+
+// WEBSOCKETS
+io.set('log level', 0);  // Turn off debug messages
+io.sockets.on('connection', appSocket.listener);
+
+// START SERVER
+server.listen(app.get('port'), function(){
+  console.log('Botcamp server listening on port ' + app.get('port'));
 });
 
-app.get('/teis', function(req, res){
-    res.send('Hello Teis');
-});
 
-server.listen(1338);
 
-console.log('Express server started on port 1338');
-
-io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-  
-  socket.on('sendlars', function (data) {
-    console.log("sendlars = " + JSON.stringify(data));
-    socket.emit('news', { message: data.led1 });
-  });
-  
-});
