@@ -5,10 +5,11 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>BeagleBone Black Demo</title>
-
+    <title>Botcamp</title>
     <!-- jQuery and jQuery Mobile -->
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+    
+    
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -103,11 +104,17 @@
     </script>
 </head>
 <body>
+<style type="text/css">
+        .ui-mobile-viewport {
+            max-width:400px;
+            background-color:red;
+        }
+    </style>
 <!-- Home -->
 <div data-role="page" id="page1">
     <div data-theme="a" data-role="header">
         <h3>
-            BeagleBone Black
+            BOTCAMP
         </h3>
     </div>
     <div data-role="content">
