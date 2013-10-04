@@ -8,5 +8,4 @@ exports.listener = function (socket) {
     console.log("sendlars = " + JSON.stringify(data));
     socket.emit('news', { message: data.led1 });
   });
-  
 };

@@ -18,88 +18,12 @@
     <script>
     var socket = io.connect();
     // Send data through socket
-    function ledRed(value){
-      socket.emit('ledRed', value);
-    }
-    function ledGreen(value){
-      socket.emit('ledGreen', value);
-    }
-    function ledYellow(value){
-      socket.emit('ledYellow', value);
-    }
     function Demo(value){
       socket.emit('demo', value);
     }      
 
-    // Take actions based on device orientation (works on mobile devices only)
-    if (window.DeviceOrientationEvent) {
-        // Listen for the deviceorientation event and handle the raw data
-        window.addEventListener('deviceorientation', function(eventData) {
-          // gamma is the left-to-right tilt in degrees, where right is positive
-          var tiltLR = eventData.gamma;
-          // beta is the front-to-back tilt in degrees, where front is positive
-          var tiltFB = eventData.beta;
-          // call orientation event handler
-          if (Gyro.value == 'on'){
-            deviceOrientationHandler(tiltLR, tiltFB);
-          }
-        }, false);
-    }
-    else {
-        console.log("DeviceOrientation is NOT supported");
-        }
-    
-    function deviceOrientationHandler(LeftRight, FrontBack){
-        // normalize and limit values between 0 and 100
-        LeftRight = Math.min(Math.max(Math.round(LeftRight), -100), 100);
-        FrontBack = Math.min(Math.max(Math.round(FrontBack), -100), 100);
-        //LeftRight = Math.round((LeftRight/180)*100);
-        //FrontBack = Math.round((LeftRight/180)*50);
-        
-        if (LeftRight >= 0) {
-            ledGreen(LeftRight);
-            ledRed(0);
-        } 
-        if (LeftRight <= 0) {
-            ledRed(Math.abs(LeftRight));
-            ledGreen(0);
-        }
-        if (FrontBack <= 0) {
-            ledYellow(Math.abs(FrontBack));
-        }
-        if (FrontBack > 0) {
-            ledYellow(0);
-        }
-    }
-        
-    function demoSwitch(sel){
-        if (sel.value == "on") {
-            $("#Gyro").val('off').slider('refresh').slider('disable');
-            $("#slider1").val('0').slider('refresh').slider('disable');
-            $("#slider2").val('0').slider('refresh').slider('disable');
-            $("#slider3").val('0').slider('refresh').slider('disable');
-            socket.emit('demo', sel.value);
-        } else if (sel.value == "off") {
-            socket.emit('demo', sel.value);
-            $('#Gyro').slider('enable');
-            $("#slider1").slider('enable');
-            $("#slider2").slider('enable');
-            $("#slider3").slider('enable');
-        }
-    }
- 
-    function gyroSwitch(sel){
-        if (sel.value == "on") {
-            $("#Demo").val('off').slider('refresh').slider('disable');
-            $("#slider1").val('0').slider('refresh').slider('disable');
-            $("#slider2").val('0').slider('refresh').slider('disable');
-            $("#slider3").val('0').slider('refresh').slider('disable');
-        } else if (sel.value == "off") {
-            $('#Demo').slider('enable');
-            $("#slider1").slider('enable');
-            $("#slider2").slider('enable');
-            $("#slider3").slider('enable');
-        }
+    function ledSwitch(sel){
+            socket.emit('ledSwitch', {name: sel.id, value:sel.value});
     }
     </script>
 </head>
@@ -119,40 +43,37 @@
     </div>
     <div data-role="content">
         <div data-role="fieldcontain">
-            <label for="slider1">
-                Red LED
+            <label for="led1">
+                LED 1
             </label>
-            <input id="slider1" type="range" name="slider" value="0" min="0" max="100"
-            data-highlight="false" data-theme="b" onChange="ledRed(value);">
-        </div>
-        <div data-role="fieldcontain">
-            <label for="slider2">
-                Yellow LED
-            </label>
-            <input id="slider2" type="range" name="slider" value="0" min="0" max="100"
-            data-highlight="false" data-theme="b" onChange="ledYellow(value);">
-        </div>
-        <div data-role="fieldcontain">
-            <label for="slider3">
-                Green LED
-            </label>
-            <input id="slider3" type="range" name="slider" value="0" min="0" max="100"
-            data-highlight="false" data-theme="b" onChange="ledGreen(value);">
-        </div>
-        <div data-role="fieldcontain">
-            <label for="Demo">
-                Demo Mode
-            </label>
-            <select name="toggleswitch1" id="Demo" data-theme="b" data-role="slider" onchange="demoSwitch(this);">
+            <select name="toggleled1" id="led1" data-theme="b" data-role="slider" onchange="ledSwitch(this);">
                 <option value="off">Off</option>
                 <option value="on">On</option>
             </select>
         </div>
         <div data-role="fieldcontain">
-            <label for="Gyro">
-                Gyroscope
+            <label for="led2">
+                LED 2
             </label>
-            <select name="toggleswitch2" id="Gyro" data-theme="b" data-role="slider" onchange="gyroSwitch(this);">
+            <select name="toggleled2" id="led2" data-theme="b" data-role="slider" onchange="ledSwitch(this);">
+                <option value="off">Off</option>
+                <option value="on">On</option>
+            </select>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="led3">
+                LED 3
+            </label>
+            <select name="toggleled3" id="led3" data-theme="b" data-role="slider" onchange="ledSwitch(this);">
+                <option value="off">Off</option>
+                <option value="on">On</option>
+            </select>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="led4">
+                LED 1
+            </label>
+            <select name="toggleled4" id="led4" data-theme="b" data-role="slider" onchange="ledSwitch(this);">
                 <option value="off">Off</option>
                 <option value="on">On</option>
             </select>

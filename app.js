@@ -7,7 +7,8 @@ var express = require('express')
 
 // CUSTOM MODULES
 var routes = require('./routes')
-  , appSocket = require('./routes/appSocket');
+  , appSocket = require('./routes/appSocket')
+  , leds = require('./routes/simpleleds');
 
 
 // SETUP
@@ -24,6 +25,7 @@ app.get('/teis', routes.teis);
 // WEBSOCKETS
 io.set('log level', 0);  // reduce logging - set 1 for warn, 2 for info, 3 for debug
 io.sockets.on('connection', appSocket.listener);
+io.sockets.on('connection', leds.listener);
 
 // START SERVER
 server.listen(app.get('port'), function(){
