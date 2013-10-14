@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>BOT SERVO</title>
+    <!-- jQuery and jQuery Mobile -->
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <!--<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>-->
+    <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+    var socket = io.connect();      
+
+    // LED RANGE
+    function onServoChange(servo){
+        console.log("Sending: onServoChange = " + servo.value);
+        if (servo.value != servoSliderValue)
+            socket.emit('onServoChange', {name: servo.id, value: servo.value});
+    }
+        
+    var servoSliderValue = -1000; 
+    
+    socket.on('onServoChange', function(servo){
+        console.log("Recieved: onServoChange = " + servo.value);
+        
+        if ($('#' + servo.name).val() != servo.value)
+        {
+            servoSliderValue = servo.value;
+            console.log("a = " + $('#' + servo.name).val() + ", b = " + servoSliderValue);
+            $('#' + servo.name).val(servoSliderValue).slider('refresh');
+        }
+    });
+    </script>
+</head>
+<body>
+<style type="text/css">
+        .ui-mobile-viewport {
+            max-width:400px;
+            background-color:red;
+        }
+    </style>
+<!-- Home -->
+<div data-role="page" id="page1">
+    <div data-theme="a" data-role="header">
+        <h3>
+            BOT SERVO
+        </h3>
+    </div>
+    <div data-role="content">
+        <div data-role="fieldcontain">
+            <label for="servo1">
+                Horizontal
+            </label>
+            <input id="servo1" type="range" name="slider" value="0" min="-90" max="90"
+            data-highlight="false" data-theme="b" onChange="onServoChange(this);">
+        </div>
+        <div data-role="fieldcontain">
+            <label for="servo2">
+                Vertical
+            </label>
+            <input id="servo2" type="range" name="slider" value="0" min="-90" max="90"
+            data-highlight="false" data-theme="b" onChange="onServoChange(this);">
+        </div>
+    </div>
+</div>
+</body>
+</html>

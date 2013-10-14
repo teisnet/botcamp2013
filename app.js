@@ -8,7 +8,8 @@ var express = require('express')
 // CUSTOM MODULES
 var routes = require('./routes')
   , appSocket = require('./routes/appSocket')
-  , leds = require('./routes/simpleleds');
+  , leds = require('./routes/simpleleds')
+  , simpleServo = require('./routes/simpleServo');
 
 
 // SETUP
@@ -26,10 +27,11 @@ app.get('/teis', routes.teis);
 io.set('log level', 0);  // reduce logging - set 1 for warn, 2 for info, 3 for debug
 io.sockets.on('connection', appSocket.listener);
 io.sockets.on('connection', leds.listener);
+io.sockets.on('connection', simpleServo.listener);
 
 // START SERVER
 server.listen(app.get('port'), function(){
-  console.log('Botcamp server listening on ' + getIPAddress() + ', port ' + app.get('port'));
+  console.log('Botcamp server listening on http://' + getIPAddress() + ':' + app.get('port'));
 });
 
 // Get server IP address on LAN
